@@ -3,14 +3,20 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4EFC980B0829E05BE6ECA34F /* Pods_ShortMe.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B25CAFD7CEC8186AA5C63BD7 /* Pods_ShortMe.framework */; };
 		5220429725AD6FEC00D569E0 /* ShortMeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5220429625AD6FEC00D569E0 /* ShortMeApp.swift */; };
 		5220429925AD6FEC00D569E0 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5220429825AD6FEC00D569E0 /* ContentView.swift */; };
 		5220429B25AD6FEC00D569E0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5220429A25AD6FEC00D569E0 /* Assets.xcassets */; };
 		5220429E25AD6FEC00D569E0 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5220429D25AD6FEC00D569E0 /* Preview Assets.xcassets */; };
+		526B748C25AD784A00E212B7 /* ShortMeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526B748B25AD784A00E212B7 /* ShortMeView.swift */; };
+		526B748F25AD789C00E212B7 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526B748E25AD789C00E212B7 /* HistoryView.swift */; };
+		526B749225AD78A400E212B7 /* InfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526B749125AD78A400E212B7 /* InfoView.swift */; };
+		526B749725ADAA2200E212B7 /* History.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526B749625ADAA2200E212B7 /* History.swift */; };
+		526B749B25ADAB0500E212B7 /* ApiRequests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526B749A25ADAB0500E212B7 /* ApiRequests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -20,6 +26,14 @@
 		5220429A25AD6FEC00D569E0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5220429D25AD6FEC00D569E0 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		5220429F25AD6FED00D569E0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		526B748B25AD784A00E212B7 /* ShortMeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortMeView.swift; sourceTree = "<group>"; };
+		526B748E25AD789C00E212B7 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
+		526B749125AD78A400E212B7 /* InfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoView.swift; sourceTree = "<group>"; };
+		526B749625ADAA2200E212B7 /* History.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = History.swift; sourceTree = "<group>"; };
+		526B749A25ADAB0500E212B7 /* ApiRequests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiRequests.swift; sourceTree = "<group>"; };
+		6398889C562376612DBEF17F /* Pods-ShortMe.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShortMe.debug.xcconfig"; path = "Target Support Files/Pods-ShortMe/Pods-ShortMe.debug.xcconfig"; sourceTree = "<group>"; };
+		9BE5B447C528D66EA55F6A15 /* Pods-ShortMe.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShortMe.release.xcconfig"; path = "Target Support Files/Pods-ShortMe/Pods-ShortMe.release.xcconfig"; sourceTree = "<group>"; };
+		B25CAFD7CEC8186AA5C63BD7 /* Pods_ShortMe.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ShortMe.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -27,17 +41,28 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4EFC980B0829E05BE6ECA34F /* Pods_ShortMe.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2E3A5516C3D0F8252F108AC9 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B25CAFD7CEC8186AA5C63BD7 /* Pods_ShortMe.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		5220428A25AD6FEC00D569E0 = {
 			isa = PBXGroup;
 			children = (
 				5220429525AD6FEC00D569E0 /* ShortMe */,
 				5220429425AD6FEC00D569E0 /* Products */,
+				72320BA09C9E5A76C1A1B8A4 /* Pods */,
+				2E3A5516C3D0F8252F108AC9 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -52,11 +77,16 @@
 		5220429525AD6FEC00D569E0 /* ShortMe */ = {
 			isa = PBXGroup;
 			children = (
+				526B749525ADAA0D00E212B7 /* Models */,
 				5220429625AD6FEC00D569E0 /* ShortMeApp.swift */,
 				5220429825AD6FEC00D569E0 /* ContentView.swift */,
+				526B748B25AD784A00E212B7 /* ShortMeView.swift */,
+				526B748E25AD789C00E212B7 /* HistoryView.swift */,
+				526B749125AD78A400E212B7 /* InfoView.swift */,
 				5220429A25AD6FEC00D569E0 /* Assets.xcassets */,
 				5220429F25AD6FED00D569E0 /* Info.plist */,
 				5220429C25AD6FEC00D569E0 /* Preview Content */,
+				526B749A25ADAB0500E212B7 /* ApiRequests.swift */,
 			);
 			path = ShortMe;
 			sourceTree = "<group>";
@@ -69,6 +99,23 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		526B749525ADAA0D00E212B7 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				526B749625ADAA2200E212B7 /* History.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		72320BA09C9E5A76C1A1B8A4 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				6398889C562376612DBEF17F /* Pods-ShortMe.debug.xcconfig */,
+				9BE5B447C528D66EA55F6A15 /* Pods-ShortMe.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -76,9 +123,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 522042A225AD6FED00D569E0 /* Build configuration list for PBXNativeTarget "ShortMe" */;
 			buildPhases = (
+				C49948463137EC39818EE041 /* [CP] Check Pods Manifest.lock */,
 				5220428F25AD6FEC00D569E0 /* Sources */,
 				5220429025AD6FEC00D569E0 /* Frameworks */,
 				5220429125AD6FEC00D569E0 /* Resources */,
+				781EBC5AB46BAD3B2C64E7D0 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -133,13 +182,60 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		781EBC5AB46BAD3B2C64E7D0 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ShortMe/Pods-ShortMe-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ShortMe/Pods-ShortMe-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ShortMe/Pods-ShortMe-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C49948463137EC39818EE041 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-ShortMe-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		5220428F25AD6FEC00D569E0 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				526B749725ADAA2200E212B7 /* History.swift in Sources */,
 				5220429925AD6FEC00D569E0 /* ContentView.swift in Sources */,
+				526B748F25AD789C00E212B7 /* HistoryView.swift in Sources */,
+				526B749B25ADAB0500E212B7 /* ApiRequests.swift in Sources */,
 				5220429725AD6FEC00D569E0 /* ShortMeApp.swift in Sources */,
+				526B749225AD78A400E212B7 /* InfoView.swift in Sources */,
+				526B748C25AD784A00E212B7 /* ShortMeView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -264,6 +360,7 @@
 		};
 		522042A325AD6FED00D569E0 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6398889C562376612DBEF17F /* Pods-ShortMe.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -277,7 +374,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = Ghaleh.ShortMe;
+				MARKETING_VERSION = 1.0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = app.gco.shortme;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -286,6 +384,7 @@
 		};
 		522042A425AD6FED00D569E0 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9BE5B447C528D66EA55F6A15 /* Pods-ShortMe.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -299,7 +398,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = Ghaleh.ShortMe;
+				MARKETING_VERSION = 1.0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = app.gco.shortme;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
