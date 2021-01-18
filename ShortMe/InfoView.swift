@@ -19,7 +19,7 @@ struct InfoView: View {
         
         
         
-        
+        NavigationView {
         VStack {
             Image("roundedPNG")
                 .resizable()
@@ -80,7 +80,8 @@ struct InfoView: View {
             }
         }
         
-        
+        .navigationBarTitle("Info", displayMode: .inline)
+    }
     }
     
     func autoPasteChecked() {

@@ -7,7 +7,6 @@ target 'ShortMe' do
 
  pod 'Alamofire'
  pod 'SwiftyJSON'
- pod 'FontAwesome.swift'
 
   # Pods for ShortMe
 

@@ -8,10 +8,15 @@
 import SwiftUI
 
 struct ShortMeView: View {
-    @State var URL: String = ""
-    @State var serviceEn: String = ""
+    @State var orginalURL: String = ""
+    @State var shortURL: String = ""
+    @State var progressLoading: Bool = false
     
-//    @State var
+    @State var historyModel : History?
+    
+    @Environment(\.openURL) var openURL
+    
+    let pasteboard = UIPasteboard.general
     
    @State var services = [
         Service(title:"is.gd", isChecked: true),
@@ -23,18 +28,27 @@ struct ShortMeView: View {
         Service(title:"shrturi.com", isChecked: false),
         Service(title:"shrtco.de", isChecked: false)
     ]
+    
+    
+    init() {
+            UITableView.appearance().showsVerticalScrollIndicator = false
+        }
+    
     var body: some View {
         
+        NavigationView {
         VStack {
             VStack {
                 Text("Services:")
                     .font(.title3)
                     .foregroundColor(.white)
-                    .padding(5)
+                    .padding(.top)
+                    .padding(.bottom , -15)
                 
-                List {
+                ScrollView(showsIndicators: false) {
                     
                     ForEach(services) { item in
+                        
                         HStack {
                             
                             Text(item.title)
@@ -44,85 +58,131 @@ struct ShortMeView: View {
                             Image(systemName: item.isChecked ?
                                     "checkmark.circle" : "circle")
                                 .font(.title2)
+                            
                         }
-                        
+                            
                         .onTapGesture {
                             let index = services.firstIndex(where: { $0.isChecked == true })
                             services[index ?? 0].isChecked = false
-                            print(index)
+                            
                             let newIndex = services.firstIndex(where: { $0 == item })
                             services[newIndex ?? 0].isChecked = true
+                            
+                            withAnimation {
+                                self.progressLoading = false
+                            }
+                            
                         }
-                        .padding()
+                        
+                        .padding(.leading)
+                        .padding(.trailing)
+                        Color.pink.frame(height:CGFloat(2) / UIScreen.main.scale)
                         
                     }
                 }
+                .padding()
+                .background(Color.white)
                 .cornerRadius(15)
                 .padding()
+                
+                    
                 
                 Text("URL:")
                     .font(.title3)
                     .foregroundColor(.white)
-                    .padding(.top)
+                    .padding(.bottom, -10)
                 
                 HStack {
                     
-                TextField("Enter your URL here...", text: $URL)
+                TextField("Enter your URL here...", text: $orginalURL, onCommit: {
+                    changeURL()
+                  })
+                    .textContentType(.URL)
+                    .keyboardType(.URL)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.trailing, -5)
                     .padding(.leading)
                     
-                    Button(action: {}, label: {
+                    
+                    Button(action: {
+                        
+                        if pasteboard.hasStrings {
+                            orginalURL = pasteboard.string ?? ""
+                        }
+                    }, label: {
                         Image("icons8-paste")
                             .foregroundColor(.white)
                             .frame(width: 50, height: 50, alignment: .center)
                             .padding(.trailing)
                     })
                 }
-                .padding(.top, -5.0)
-               
-                Button("Go!") {
-                    switch services.first(where: { $0.isChecked == true })?.title {
-                    case "is.gd":
-                        APIRequest.sharedInstance.getIsGd(url: URL) { (history) in
-                            
-                        }
-                    case "v.gd":
-                        APIRequest.sharedInstance.getVGd(url: URL) { (history) in
-                            
-                        }
-                    case "tiny-url":
-                        APIRequest.sharedInstance.postTinyUrl(url: URL) { (history) in
-                            
-                        }
-                    case "cutt.ly":
-                        APIRequest.sharedInstance.getCuttLy(url: URL) { (history) in
-                            
-                        }
-                    case "murl.com":
-                        APIRequest.sharedInstance.getMurlCom(url: URL) { (history) in
-//                            gotHistory(history)
-                        }
-                    case "hideurl.com":
-                        APIRequest.sharedInstance.postHideuri(url: URL) { (history) in
-                            
-                        }
-                    case "shrturi.com":
-                        APIRequest.sharedInstance.postShrturi(url: URL) { (history) in
-                            
-                        }
-                    case "shrtco.de":
-                        APIRequest.sharedInstance.getShrtcoDe(url: URL) { (history) in
-                            
-                        }
+                
+                if progressLoading {
+                    ProgressView()
+                        .frame(width: 60, height: 40, alignment: .center)
                         
-                    default:
-                        APIRequest.sharedInstance.getIsGd(url: URL) { (history) in
-                            
-                        }
-                    }
                 }
-                .font(.title2)
+                
+                
+                if shortURL != "" {
+                    withAnimation {
+                        VStack {
+                            Text("Short URL:")
+                                .font(.title3)
+                            
+                            HStack {
+                                Text(shortURL)
+                                    .font(.title2)
+                                    .padding(.leading, 25)
+                                
+                                Spacer()
+                                
+                                Button(action: {
+                                    
+                                    pasteboard.string = "\(shortURL)"
+                                    
+                                }, label: {
+                                    Image(systemName: "doc.on.doc")
+                                    
+                                })
+                                .padding(5)
+                                Button(action: {
+                                    
+                                    openURL(URL(string: shortURL)! )
+                                    
+                                }, label: {
+                                    Image(systemName: "safari")
+                                })
+                                .padding(.trailing, 20)
+                                .padding(5)
+                            }
+                            .frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
+                            
+                            .padding(8)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .stroke()
+                                    .stroke(lineWidth: 1.5)
+                                    .foregroundColor(.white)
+                                    .padding(.leading)
+                                    .padding(.trailing)
+                        )
+                        }
+                        .foregroundColor(.white)
+                        
+                    }
+                    
+                }else {
+                    
+                }
+                
+                
+                
+                
+                
+                Button("Go!") {
+                    changeURL()
+            }.font(.title2)
                 .frame(width: 180, height: 50, alignment: .center)
                 .foregroundColor(.pink)
                 .background(Color.white)
@@ -134,19 +194,9 @@ struct ShortMeView: View {
         }
         
         .background(Image("background").resizable()
-                        .frame(minWidth: 0, idealWidth: .infinity, maxWidth: .infinity, minHeight: /*@START_MENU_TOKEN@*/0/*@END_MENU_TOKEN@*/, idealHeight: .infinity, maxHeight: .infinity, alignment: .center))
+                        .frame(minWidth: 0, idealWidth: .infinity, maxWidth: .infinity, minHeight: 0, idealHeight: .infinity, maxHeight: .infinity, alignment: .center))
         
         .onAppear() {
-//            APIRequest.sharedInstance.getFromTinyUrl(url: "") { (<#String#>) in
-//                <#code#>
-//            }
-
-            
-            
-            
-            
-            
-            let pasteboard = UIPasteboard.general
             
             
             if pasteboard.hasStrings {
@@ -155,32 +205,102 @@ struct ShortMeView: View {
                 
                 if isAuto as! String == "On" {
                         print("auto on")
-                    URL = "\(pasteboard.string ?? "")"
+                    orginalURL = "\(pasteboard.string ?? "")"
                 }else {
                     print("auto off")
                 }
             }
+        }
+        .navigationBarTitle("Short me", displayMode: .inline)
+    }
+        
+    }
+    func gotHistory(history: History?) {
+        guard let historyItem = history else { return }
+        print(historyItem)
+        var historyList: [History]
+
+        let historyListData =  UserDefaults.standard.data(forKey: "History")
+        if historyListData == nil {
+            historyList = [History]()
+        }else {
+            historyList = try! JSONDecoder().decode([History].self, from: historyListData!)
+        }
+        
+        historyList.append(historyItem)
+        
+        print(historyList)
+        if let encoder = try? JSONEncoder().encode(historyList) {
+            UserDefaults.standard.set(encoder, forKey: "History")
             
-            
-            
-            
-            
-            func go() {
-                for i in 0..<services.count {
-                    if services[0].isChecked == true {
-                        
-                    }
-//                    switch services[i].isChecked {
-//                    case true:
-//                        <#code#>
-//                    default:
-//                        <#code#>
-//                    }
-                }
+            print(historyList)
+        }
+////        print(UserDefaults.standard.object(forKey: "History")!)
+//        if let loadedTemp = try? JSONDecoder().decode([History].self, from: historyList!) {
+//
+//        }
+        
+        
+//        historyList?.removeFirst(<#T##k: Int##Int#>)
+
+        if history?.shortURL != nil {
+            shortURL = history?.shortURL ?? ""
+        }
+        withAnimation {
+            progressLoading.toggle()
+        }
+        
+        
+    }
+    
+    func changeURL() {
+        if self.progressLoading == false {
+        if orginalURL != "" {
+        withAnimation {
+            self.progressLoading.toggle()
+            shortURL = ""
+        }
+        switch services.first(where: { $0.isChecked == true })?.title {
+        case "is.gd":
+            APIRequest.sharedInstance.getIsGd(url: orginalURL) { (history) in
+                gotHistory(history: history)
+            }
+        case "v.gd":
+            APIRequest.sharedInstance.getVGd(url: orginalURL) { (history) in
+                gotHistory(history: history)
+            }
+        case "tiny-url":
+            APIRequest.sharedInstance.postTinyUrl(url: orginalURL) { (history) in
+                gotHistory(history: history)
+            }
+        case "cutt.ly":
+            APIRequest.sharedInstance.getCuttLy(url: orginalURL) { (history) in
+                gotHistory(history: history)
+            }
+        case "murl.com":
+            APIRequest.sharedInstance.getMurlCom(url: orginalURL) { (history) in
+                gotHistory(history: history)
+            }
+        case "hideurl.com":
+            APIRequest.sharedInstance.postHideuri(url: orginalURL) { (history) in
+                gotHistory(history: history)
+            }
+        case "shrturi.com":
+            APIRequest.sharedInstance.postShrturi(url: orginalURL) { (history) in
+                gotHistory(history: history)
+            }
+        case "shrtco.de":
+            APIRequest.sharedInstance.getShrtcoDe(url: orginalURL) { (history) in
+                gotHistory(history: history)
             }
             
-            
+        default:
+            APIRequest.sharedInstance.getIsGd(url: orginalURL) { (history) in
+                gotHistory(history: history)
+            }
         }
+    }
+    }
     }
 }
 
@@ -201,6 +321,6 @@ struct Service: Identifiable, Equatable {
     
 }
 
-func gotHistory(history: History?) {
-    
-}
+
+// app mire back ground bar migarde auto paste beshe
+

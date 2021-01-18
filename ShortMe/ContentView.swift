@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @State private var selection = "Short Me"
+    @State private var selection = 1
     
     init() {
         UITabBar.appearance().barTintColor = UIColor.systemGray6
@@ -17,23 +17,20 @@ struct ContentView: View {
     
     var body: some View {
         
-        NavigationView {
             ZStack {
                 TabView(selection: $selection){
                     
                     ShortMeView().tabItem {
                         VStack {
-                            Image("icons8-cut")
-                            
+                            selection == 1 ? Image("icons8-cut_filled") : Image("icons8-cut")
                             Text("Short Me")
-                            
                         } }.tag(1)
                     
                     
                     
                     HistoryView().tabItem {
                         VStack {
-                            Image("icons8-past")
+                            selection == 2 ? Image("icons8-past_filled") : Image("icons8-past")
                                 .renderingMode(.original)
                             Text("History")
                         } }.tag(2)
@@ -42,17 +39,17 @@ struct ContentView: View {
                     
                     InfoView().tabItem {
                         VStack {
-                            Image("icons8-info")
+                            selection == 3 ? Image("icons8-info_filled") : Image("icons8-info")
                             Text("Info")
                         }
                     }.tag(3)
                 }
                 .accentColor(.pink)
+                
 
         }
-            .navigationBarTitle("\(selection)", displayMode: .inline)
+
             
-        }
         
     }
     

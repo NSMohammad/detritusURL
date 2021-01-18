@@ -17,7 +17,8 @@ class APIRequest {
     func getCuttLy(url: String, completion: @escaping (History?) -> Void) {
         get(URL: "https://cutt.ly/api/api.php?key=fe0a750603e3c1043dbd659567026e7756ed0&short=\(url)", completion: { response in
             if response != nil {
-                let json = JSON(response!)
+                let json = response!.data(using: String.Encoding.utf8).flatMap({try? JSON(data: $0)}) ?? JSON(NSNull())
+//                let json = JSON(response!)
                 let shortLink = json["url"]["shortLink"].stringValue
                 
                 completion(History(org: url, short: shortLink))
@@ -53,7 +54,7 @@ class APIRequest {
     func getShrtcoDe(url: String, completion: @escaping (History?) -> Void) {
         get(URL: "https://api.shrtco.de/v2/shorten?url=\(url)", completion: { response in
             if response != nil {
-                let json = JSON(response!)
+                let json = response!.data(using: String.Encoding.utf8).flatMap({try? JSON(data: $0)}) ?? JSON(NSNull())
                 let shortLink = json["result"]["full_short_link"].stringValue
                 
                 completion(History(org: url, short: shortLink))
@@ -70,6 +71,7 @@ class APIRequest {
     
     func postTinyUrl(url: String, completion: @escaping (History?) -> Void) {
         post(URL: "http://tiny-url.info/api/v1/random",params: ["apikey": "7BC5AG80B796CD9DB5A3", "format": "json", "url": url], completion: { response in
+            print(response)
             if response != nil {
                 let json = JSON(response!)
                 let shortLink = json["shorturl"].stringValue
