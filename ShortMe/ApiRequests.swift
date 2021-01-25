@@ -37,9 +37,15 @@ class APIRequest {
     }
     func getIsGd(url: String, completion: @escaping (History?) -> Void) {
         get(URL: "https://is.gd/create.php?format=simple&url=\(url)", completion: { response in
-            guard let respons = response else { return }
+            print(response)
+            if response == nil {
+                completion(nil)
+            }else {
+                completion(History(org: url, short: response!))
+            }
+//            guard let respons = response else { return }
             
-            completion(History(org: url, short: respons))
+            
             
         })
     }
@@ -77,6 +83,7 @@ class APIRequest {
                 let shortLink = json["shorturl"].stringValue
                 completion(History(org: url, short: shortLink))
             }else {
+                
                 completion(nil)
             }
         })

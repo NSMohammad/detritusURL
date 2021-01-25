@@ -29,6 +29,10 @@ struct ShortMeView: View {
         Service(title:"shrtco.de", isChecked: false)
     ]
     
+    @State var showsAlert = false
+    
+
+    
     
     init() {
             UITableView.appearance().showsVerticalScrollIndicator = false
@@ -53,6 +57,7 @@ struct ShortMeView: View {
                             
                             Text(item.title)
                                 .font(.title3)
+                                
                             Spacer()
                             //checkmark
                             Image(systemName: item.isChecked ?
@@ -60,7 +65,8 @@ struct ShortMeView: View {
                                 .font(.title2)
                             
                         }
-                            
+                        .contentShape(Rectangle())
+//                        .frame(maxWidth : .infinity)
                         .onTapGesture {
                             let index = services.firstIndex(where: { $0.isChecked == true })
                             services[index ?? 0].isChecked = false
@@ -139,7 +145,7 @@ struct ShortMeView: View {
                                 
                                 Button(action: {
                                     
-                                    pasteboard.string = "\(shortURL)"
+                                    pasteboard.string = shortURL
                                     
                                 }, label: {
                                     Image(systemName: "doc.on.doc")
@@ -177,17 +183,21 @@ struct ShortMeView: View {
                 }
                 
                 
+                                
+                                 
                 
-                
-                
-                Button("Go!") {
+                Button(action: {
                     changeURL()
-            }.font(.title2)
-                .frame(width: 180, height: 50, alignment: .center)
-                .foregroundColor(.pink)
-                .background(Color.white)
-                .cornerRadius(15)
-                .padding()
+                }, label: {
+                    Text("Go!")
+                        .frame(minWidth: 100, maxWidth: 180, minHeight: 50, maxHeight: 50, alignment: .center)
+                        .font(.title2)
+                        .foregroundColor(.pink)
+                        .background(Color.white)
+                        .cornerRadius(15)
+                        .padding()
+                })
+                
             }
             
             Spacer()
@@ -212,14 +222,28 @@ struct ShortMeView: View {
             }
         }
         .navigationBarTitle("Short me", displayMode: .inline)
+        .alert(isPresented: $showsAlert) {
+                    Alert(title: Text("Cant use of this service"), message: Text("Try another service Or check URL"), dismissButton: .default(Text("Got it!")))
+                }
     }
         
     }
     func gotHistory(history: History?) {
-        guard let historyItem = history else { return }
+        guard let historyItem = history else {
+            showsAlert = true
+            progressLoading.toggle()
+            return
+        }
         print(historyItem)
         var historyList: [History]
 
+        
+        
+        
+        
+//        historyItem.date
+//        historyItem
+        
         let historyListData =  UserDefaults.standard.data(forKey: "History")
         if historyListData == nil {
             historyList = [History]()
@@ -235,13 +259,14 @@ struct ShortMeView: View {
             
             print(historyList)
         }
-////        print(UserDefaults.standard.object(forKey: "History")!)
-//        if let loadedTemp = try? JSONDecoder().decode([History].self, from: historyList!) {
-//
-//        }
+        
+//        let day = calendar.component(.day, from: date)
+//        let month = calendar.component(.month, from: date)
+//        let year = calendar.component(.year, from: date)
         
         
-//        historyList?.removeFirst(<#T##k: Int##Int#>)
+        
+        
 
         if history?.shortURL != nil {
             shortURL = history?.shortURL ?? ""
@@ -256,10 +281,14 @@ struct ShortMeView: View {
     func changeURL() {
         if self.progressLoading == false {
         if orginalURL != "" {
+//            UserDefaults.standard.set(true, forKey: "SortHistory")
         withAnimation {
             self.progressLoading.toggle()
             shortURL = ""
         }
+            if orginalURL.contains("://") == false {
+                orginalURL = "Https://" + orginalURL
+            }
         switch services.first(where: { $0.isChecked == true })?.title {
         case "is.gd":
             APIRequest.sharedInstance.getIsGd(url: orginalURL) { (history) in
@@ -311,9 +340,6 @@ struct ShortMeView_Previews: PreviewProvider {
 }
 
 struct Service: Identifiable, Equatable {
-//    static func == (lhs: Service, rhs: Service) -> Bool {
-//        return lhs.title == rhs.title && lhs.isChecked == rhs.isChecked
-//    }
     var id = UUID()
     
     var title = ""

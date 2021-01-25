@@ -7,12 +7,13 @@
 
 import Foundation
 
-struct History: Identifiable, Codable {
+struct History: Identifiable, Codable, Equatable {
     
     enum CodingKeys: String, CodingKey {
         case orginalURL
         case shortURL
         case date
+        case timeStamp
     }
     
     init(from decoder: Decoder) throws {
@@ -21,10 +22,12 @@ struct History: Identifiable, Codable {
         let orginalLink = try container.decode(Data.self, forKey: .orginalURL)
         let shortLink = try container.decode(Data.self, forKey: .shortURL)
         let dateTime = try container.decode(Data.self, forKey: .date)
+        let time = try container.decode(Data.self, forKey: .timeStamp)
         
         orginalURL = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(orginalLink) as! String
         shortURL = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(shortLink) as! String
         date = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(dateTime) as! String
+        timeStamp = try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(time) as! String
     }
     
     public func encode(to encoder: Encoder) throws {
@@ -38,6 +41,9 @@ struct History: Identifiable, Codable {
         
         let dateCreate = try NSKeyedArchiver.archivedData(withRootObject: date, requiringSecureCoding: false)
         try container.encode(dateCreate, forKey: .date)
+        
+        let timeCreate = try NSKeyedArchiver.archivedData(withRootObject: timeStamp, requiringSecureCoding: false)
+        try container.encode(timeCreate, forKey: .timeStamp)
           
     }
 
@@ -48,12 +54,19 @@ struct History: Identifiable, Codable {
     var orginalURL: String = ""
     var shortURL: String = ""
     var date: String = ""
+    var timeStamp: String = ""
     
     
     init(org: String, short: String) {
         orginalURL = org
         shortURL = short
-        date = ""
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy/MM/dd"
+        date = dateFormatter.string(from: Date())
+        
+        dateFormatter.dateFormat = "yyyy/MM/dd HH:mm:ss"
+        timeStamp = dateFormatter.string(from: Date())
     }
     
 }

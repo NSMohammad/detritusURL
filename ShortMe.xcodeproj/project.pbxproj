@@ -17,6 +17,7 @@
 		526B749225AD78A400E212B7 /* InfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526B749125AD78A400E212B7 /* InfoView.swift */; };
 		526B749725ADAA2200E212B7 /* History.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526B749625ADAA2200E212B7 /* History.swift */; };
 		526B749B25ADAB0500E212B7 /* ApiRequests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526B749A25ADAB0500E212B7 /* ApiRequests.swift */; };
+		527F1CA725BC4E08003A872B /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527F1CA625BC4E08003A872B /* Toast.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +32,7 @@
 		526B749125AD78A400E212B7 /* InfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoView.swift; sourceTree = "<group>"; };
 		526B749625ADAA2200E212B7 /* History.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = History.swift; sourceTree = "<group>"; };
 		526B749A25ADAB0500E212B7 /* ApiRequests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiRequests.swift; sourceTree = "<group>"; };
+		527F1CA625BC4E08003A872B /* Toast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
 		6398889C562376612DBEF17F /* Pods-ShortMe.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShortMe.debug.xcconfig"; path = "Target Support Files/Pods-ShortMe/Pods-ShortMe.debug.xcconfig"; sourceTree = "<group>"; };
 		9BE5B447C528D66EA55F6A15 /* Pods-ShortMe.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShortMe.release.xcconfig"; path = "Target Support Files/Pods-ShortMe/Pods-ShortMe.release.xcconfig"; sourceTree = "<group>"; };
 		B25CAFD7CEC8186AA5C63BD7 /* Pods_ShortMe.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ShortMe.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -87,6 +89,7 @@
 				5220429F25AD6FED00D569E0 /* Info.plist */,
 				5220429C25AD6FEC00D569E0 /* Preview Content */,
 				526B749A25ADAB0500E212B7 /* ApiRequests.swift */,
+				527F1CA625BC4E08003A872B /* Toast.swift */,
 			);
 			path = ShortMe;
 			sourceTree = "<group>";
@@ -230,6 +233,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				526B749725ADAA2200E212B7 /* History.swift in Sources */,
+				527F1CA725BC4E08003A872B /* Toast.swift in Sources */,
 				5220429925AD6FEC00D569E0 /* ContentView.swift in Sources */,
 				526B748F25AD789C00E212B7 /* HistoryView.swift in Sources */,
 				526B749B25ADAB0500E212B7 /* ApiRequests.swift in Sources */,
