@@ -26,8 +26,10 @@ struct HistoryView: View {
     }
     
     var body: some View {
-        let _ = print(historyDefault)
-        if historyDefault == nil {
+//        let _ = print(historyDefault?.count)
+//        let _ = print(historyData.count)
+        
+        if historyDefault == nil || historyDefault?.count == 2 {
             NavigationView {
                 VStack {
                     Image(systemName: "folder.circle").resizable()
@@ -124,9 +126,11 @@ struct HistoryView: View {
 //                                historyDefault!.remove(at: historyData.firstIndex(of: historyData[i])!)
 //                                historyData.remove(at: historyData.Index(historyData[i]))
                                 
+                                if historyData.count == 0 {
+                                    historyDefault = nil
+                                }
                                 
-                                
-//                                UserDefaults.standard.synchronize()
+                                UserDefaults.standard.synchronize()
                                 
                             },label: {
                                         
@@ -144,10 +148,10 @@ struct HistoryView: View {
                     .padding()
                     .background(Color.white)
                     .cornerRadius(20.0)
-                    .padding(.top)
+                    .padding(.top, 5)
                     .padding(.leading)
                     .padding(.trailing)
-                    .padding(.bottom, -10)
+//                    .padding(.bottom, 2)
                 }
                 .onAppear() {
                     historyData.sort { (lhs, rhs) -> Bool in
@@ -184,11 +188,13 @@ struct HistoryView: View {
                                                 return lhs.timeStamp < rhs.timeStamp
                                             }
                                             sortByLast = false
+                                            UserDefaults.standard.setValue(false, forKey: "SortHistory")
                                         }else {
                                             historyData.sort { (lhs, rhs) -> Bool in
                                                 return lhs.timeStamp > rhs.timeStamp
                                             }
                                             sortByLast = true
+                                            UserDefaults.standard.setValue(true, forKey: "SortHistory")
                                         }
                                         
                                         
@@ -204,9 +210,9 @@ struct HistoryView: View {
                                             }
                                         }else {
                                             if sortByLast {
-                                                Image(systemName: "mount.fill")
+                                                Image(systemName: "chevron.up.circle")
                                             }else {
-                                                Image(systemName: "mount")
+                                                Image(systemName: "chevron.down.circle")
                                             }
                                         }
                                     })
@@ -230,8 +236,23 @@ struct HistoryView: View {
         }
         .onAppear(perform: {
                     self.reload()
+            
+            if sortByLast {
+                historyData.sort { (lhs, rhs) -> Bool in
+                    return lhs.timeStamp > rhs.timeStamp
+                }
+            }else {
+                historyData.sort { (lhs, rhs) -> Bool in
+                    return lhs.timeStamp < rhs.timeStamp
+                }
+            }
+
+            
                 })
-        
+        .onDisappear(perform: {
+            showRemoveAllButton = false
+            showDeleteButton = false
+        })
         
         }
         
@@ -239,6 +260,9 @@ struct HistoryView: View {
     private func reload() {
         print(historyData)
         historyData = try! JSONDecoder().decode([History].self, from: UserDefaults.standard.data(forKey: "History")!)
+//        if historyData.count == 0 {
+//            historyDefault = nil
+//        }
         print(historyData)
         }
 }

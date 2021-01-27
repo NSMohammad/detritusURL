@@ -16,6 +16,7 @@ class APIRequest {
     
     func getCuttLy(url: String, completion: @escaping (History?) -> Void) {
         get(URL: "https://cutt.ly/api/api.php?key=fe0a750603e3c1043dbd659567026e7756ed0&short=\(url)", completion: { response in
+            print(response ?? "nil")
             if response != nil {
                 let json = response!.data(using: String.Encoding.utf8).flatMap({try? JSON(data: $0)}) ?? JSON(NSNull())
 //                let json = JSON(response!)
@@ -29,15 +30,18 @@ class APIRequest {
     }
     func getVGd(url: String, completion: @escaping (History?) -> Void) {
         get(URL: "https://v.gd/create.php?format=simple&url=\(url)", completion: { response in
-            guard let respons = response else { return }
-            
-            completion(History(org: url, short: respons))
+            print(response ?? "nil")
+            if response == nil {
+                completion(nil)
+            }else {
+                completion(History(org: url, short: response!))
+            }
             
         })
     }
     func getIsGd(url: String, completion: @escaping (History?) -> Void) {
         get(URL: "https://is.gd/create.php?format=simple&url=\(url)", completion: { response in
-            print(response)
+            print(response ?? "nil")
             if response == nil {
                 completion(nil)
             }else {
@@ -50,7 +54,17 @@ class APIRequest {
         })
     }
     func getMurlCom(url: String, completion: @escaping (History?) -> Void) {
-        get(URL: "https://murl.com/api.php?url=\(url)", completion: { response in
+        
+        var sendURL = url
+        
+        if sendURL.uppercased().contains("HTTPS") {
+            sendURL.removeFirst(8)
+        }else if sendURL.uppercased().contains("HTTP") {
+            sendURL.removeFirst(7)
+        }
+        
+        get(URL: "https://murl.com/api.php?url=\(sendURL)", completion: { response in
+            print(response ?? "nil")
             guard let respons = response else { return }
             
             completion(History(org: url, short: respons))
@@ -59,6 +73,7 @@ class APIRequest {
     }
     func getShrtcoDe(url: String, completion: @escaping (History?) -> Void) {
         get(URL: "https://api.shrtco.de/v2/shorten?url=\(url)", completion: { response in
+            print(response ?? "nil")
             if response != nil {
                 let json = response!.data(using: String.Encoding.utf8).flatMap({try? JSON(data: $0)}) ?? JSON(NSNull())
                 let shortLink = json["result"]["full_short_link"].stringValue
@@ -77,7 +92,7 @@ class APIRequest {
     
     func postTinyUrl(url: String, completion: @escaping (History?) -> Void) {
         post(URL: "http://tiny-url.info/api/v1/random",params: ["apikey": "7BC5AG80B796CD9DB5A3", "format": "json", "url": url], completion: { response in
-            print(response)
+            print(response ?? "nil")
             if response != nil {
                 let json = JSON(response!)
                 let shortLink = json["shorturl"].stringValue
@@ -91,6 +106,7 @@ class APIRequest {
     
     func postHideuri(url: String, completion: @escaping (History?) -> Void) {
         post(URL: "https://hideuri.com/api/v1/shorten",params: ["url": url], completion: { response in
+            print(response ?? "nil")
             if response != nil {
                 let json = JSON(response!)
                 let shortLink = json["result_url"].stringValue
@@ -103,6 +119,7 @@ class APIRequest {
     
     func postShrturi(url: String, completion: @escaping (History?) -> Void) {
         post(URL: "https://shrturi.com/api/v1/shorten",params: ["url": url], completion: { response in
+            print(response ?? "nil")
             if response != nil {
                 let json = JSON(response!)
                 let shortLink = json["result_url"].stringValue
@@ -117,6 +134,7 @@ class APIRequest {
     
     private func get(URL: String = "",params:Parameters? = nil ,headers: HTTPHeaders? = nil , completion: @escaping (String?) -> Void) {
         AF.request(URL,method: .get, parameters: params, encoding: JSONEncoding.default, headers: headers).validate().responseString { response in
+            print(response)
             switch response.result {
             case .success(let value):
                 
@@ -131,8 +149,8 @@ class APIRequest {
     
     
     private func post(URL: String = "",params:Parameters? = nil ,headers: HTTPHeaders? = nil , completion: @escaping (JSON?) -> Void) {
-        AF.request(URL,method: .post, parameters: params, encoding: JSONEncoding.default, headers: headers).validate().responseJSON { response in
-            
+        AF.request(URL,method: .post, parameters: params, encoding: URLEncoding.default, headers: headers).validate().responseJSON { response in
+            print(response)
             switch response.result {
             case .success(let value):
                 let json = JSON(value)

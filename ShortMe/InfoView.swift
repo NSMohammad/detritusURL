@@ -56,12 +56,6 @@ struct InfoView: View {
                 
             })
             
-            Text("Your last selected website will used on today extension (widget) default website")
-                .font(.footnote)
-                .foregroundColor(.white)
-                
-                .padding()
-            
             Spacer()
             
         }
@@ -74,9 +68,11 @@ struct InfoView: View {
             if isAuto as! String == "On" {
                 print("auto on")
                 autoPaste = true
+                UserDefaults.standard.setValue("On", forKey: "AutoPaste")
             }else {
                 print("auto off")
                 autoPaste = false
+                UserDefaults.standard.setValue("Off", forKey: "AutoPaste")
             }
         }
         

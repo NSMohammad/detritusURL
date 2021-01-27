@@ -6,11 +6,19 @@
 //
 
 import SwiftUI
+import SystemConfiguration
 
 struct ShortMeView: View {
+    
+    let reachability = SCNetworkReachabilityCreateWithName(nil, "www.apple.com")
+    
+    @State var alertForConnection = false
+    
     @State var orginalURL: String = ""
     @State var shortURL: String = ""
     @State var progressLoading: Bool = false
+    
+    @State var keepOrgURL: String = ""
     
     @State var historyModel : History?
     
@@ -18,7 +26,7 @@ struct ShortMeView: View {
     
     let pasteboard = UIPasteboard.general
     
-   @State var services = [
+    @State var services = [
         Service(title:"is.gd", isChecked: true),
         Service(title:"v.gd", isChecked: false),
         Service(title:"tiny-url", isChecked: false),
@@ -35,214 +43,296 @@ struct ShortMeView: View {
     
     
     init() {
-            UITableView.appearance().showsVerticalScrollIndicator = false
-        }
+        UITableView.appearance().showsVerticalScrollIndicator = false
+    }
     
     var body: some View {
         
         NavigationView {
-        VStack {
             VStack {
-                Text("Services:")
-                    .font(.title3)
-                    .foregroundColor(.white)
-                    .padding(.top)
-                    .padding(.bottom , -15)
-                
-                ScrollView(showsIndicators: false) {
+                VStack {
+                    Text("Services:")
+                        .font(.title3)
+                        .foregroundColor(.white)
+                        .padding(.top)
+                        .padding(.bottom , -15)
                     
-                    ForEach(services) { item in
+                    ScrollView(showsIndicators: false) {
                         
-                        HStack {
+                        ForEach(services) { item in
                             
-                            Text(item.title)
-                                .font(.title3)
+                            HStack {
                                 
-                            Spacer()
-                            //checkmark
-                            Image(systemName: item.isChecked ?
-                                    "checkmark.circle" : "circle")
-                                .font(.title2)
-                            
-                        }
-                        .contentShape(Rectangle())
-//                        .frame(maxWidth : .infinity)
-                        .onTapGesture {
-                            let index = services.firstIndex(where: { $0.isChecked == true })
-                            services[index ?? 0].isChecked = false
-                            
-                            let newIndex = services.firstIndex(where: { $0 == item })
-                            services[newIndex ?? 0].isChecked = true
-                            
-                            withAnimation {
+                                Text(item.title)
+                                    .font(.title3)
+                                
+                                Spacer()
+                                //checkmark
+                                Image(systemName: item.isChecked ?
+                                        "checkmark.circle" : "circle")
+                                    .font(.title2)
+                                
+                            }
+                            .contentShape(Rectangle())
+                            //                        .frame(maxWidth : .infinity)
+                            .onTapGesture {
+                                let index = services.firstIndex(where: { $0.isChecked == true })
+                                services[index!].isChecked = false
+                                
+                                let newIndex = services.firstIndex(where: { $0 == item })
+                                services[(newIndex ?? index)!].isChecked = true
+                                
+                                if services[(newIndex ?? index)!].isChecked == true {
+                                    keepOrgURL = ""
+                                }
+                                
+                                withAnimation(.linear(duration: 1)) {
                                 self.progressLoading = false
+                                }
+                                
                             }
                             
+                            .padding(.leading)
+                            .padding(.trailing)
+                            Color.pink.frame(height:CGFloat(1.0) / UIScreen.main.scale)
+                            
+                        }
+                    }
+                    .padding()
+                    .background(Color.white)
+                    .cornerRadius(15)
+                    .padding()
+                    
+                    
+                    
+                    Text("URL:")
+                        .font(.title3)
+                        .foregroundColor(.white)
+                        .padding(.bottom, -10)
+                    
+                    HStack {
+                        
+                        TextField("Enter your URL here...", text: $orginalURL, onCommit: {
+                            changeURL()
+                        })
+                        .textContentType(.URL)
+                        .keyboardType(.URL)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .padding(.trailing, -5)
+                        .padding(.leading)
+                        
+                        
+                        Button(action: {
+                            
+                            if pasteboard.hasStrings {
+                                orginalURL = pasteboard.string ?? ""
+                            }
+                        }, label: {
+                            Image("icons8-paste")
+                                .foregroundColor(.white)
+                                .frame(width: 50, height: 50, alignment: .center)
+                                .padding(.trailing)
+                        })
+                    }
+                    
+//                    if progressLoading {
+//                        ProgressView()
+//                            .frame(width: 60, height: 40, alignment: .center)
+//
+//                    }
+                    if orginalURL != "" {
+                        ZStack {
+                            if progressLoading {
+                                
+                                ProgressView()
+                                    .frame(width: 60, height: 40, alignment: .center)
+                                
+                            }
+                            if shortURL != "" {
+                                
+                                    VStack {
+                                        
+                                        Text("Short URL:")
+                                            .font(.title3)
+                                            
+                                        HStack {
+                                            Text(shortURL)
+                                                .font(.title2)
+                                                .padding(.leading, 25)
+                                                
+                                            Spacer()
+                                            
+                                            Button(action: {
+                                                withAnimation {
+                                                pasteboard.string = shortURL
+                                                }
+                                            }, label: {
+                                                Image(systemName: "doc.on.doc")
+                                                    .transition(.slide)
+                                                
+                                            })
+                                            .padding(5)
+                                            Button(action: {
+                                                
+                                                openURL(URL(string: shortURL)! )
+                                                
+                                            }, label: {
+                                                Image(systemName: "safari")
+                                            })
+                                            .padding(.trailing, 20)
+                                            .padding(5)
+                                        }
+                                        .frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
+                                        
+                                        .padding(8)
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 10)
+                                                .stroke()
+                                                .stroke(lineWidth: 1.5)
+                                                .foregroundColor(.white)
+                                                .padding(.leading)
+                                                .padding(.trailing)
+                                        )
+                                    }
+                                    .foregroundColor(.white)
+                            
+                                
+                            }
                         }
                         
-                        .padding(.leading)
-                        .padding(.trailing)
-                        Color.pink.frame(height:CGFloat(2) / UIScreen.main.scale)
-                        
+
                     }
-                }
-                .padding()
-                .background(Color.white)
-                .cornerRadius(15)
-                .padding()
-                
                     
-                
-                Text("URL:")
-                    .font(.title3)
-                    .foregroundColor(.white)
-                    .padding(.bottom, -10)
-                
-                HStack {
+
                     
-                TextField("Enter your URL here...", text: $orginalURL, onCommit: {
-                    changeURL()
-                  })
-                    .textContentType(.URL)
-                    .keyboardType(.URL)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding(.trailing, -5)
-                    .padding(.leading)
+                    
+                    
                     
                     
                     Button(action: {
+                        var flags = SCNetworkReachabilityFlags()
+                        SCNetworkReachabilityGetFlags(self.reachability!, &flags)
                         
-                        if pasteboard.hasStrings {
-                            orginalURL = pasteboard.string ?? ""
-                        }
-                    }, label: {
-                        Image("icons8-paste")
-                            .foregroundColor(.white)
-                            .frame(width: 50, height: 50, alignment: .center)
-                            .padding(.trailing)
-                    })
-                }
-                
-                if progressLoading {
-                    ProgressView()
-                        .frame(width: 60, height: 40, alignment: .center)
-                        
-                }
-                
-                
-                if shortURL != "" {
-                    withAnimation {
-                        VStack {
-                            Text("Short URL:")
-                                .font(.title3)
-                            
-                            HStack {
-                                Text(shortURL)
-                                    .font(.title2)
-                                    .padding(.leading, 25)
-                                
-                                Spacer()
-                                
-                                Button(action: {
-                                    
-                                    pasteboard.string = shortURL
-                                    
-                                }, label: {
-                                    Image(systemName: "doc.on.doc")
-                                    
-                                })
-                                .padding(5)
-                                Button(action: {
-                                    
-                                    openURL(URL(string: shortURL)! )
-                                    
-                                }, label: {
-                                    Image(systemName: "safari")
-                                })
-                                .padding(.trailing, 20)
-                                .padding(5)
+                        if self.isNetworkReachable(with: flags) {
+                            if keepOrgURL != orginalURL {
+                                changeURL()
                             }
-                            .frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
-                            
-                            .padding(8)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke()
-                                    .stroke(lineWidth: 1.5)
-                                    .foregroundColor(.white)
-                                    .padding(.leading)
-                                    .padding(.trailing)
-                        )
+                        }else {
+                            alertForConnection = true
                         }
-                        .foregroundColor(.white)
                         
+                    }, label: {
+                        Text("Go!")
+                            .frame(minWidth: 100, maxWidth: 180, minHeight: 50, maxHeight: 50, alignment: .center)
+                            .font(.title2)
+                            .foregroundColor(.pink)
+                            .background(Color.white)
+                            .cornerRadius(15)
+                            .padding()
+                    })
+                    
+                    
+                }
+                
+                Spacer()
+            }
+            
+            .background(Image("background").resizable()
+                            .frame(minWidth: 0, idealWidth: .infinity, maxWidth: .infinity, minHeight: 0, idealHeight: .infinity, maxHeight: .infinity, alignment: .center))
+            
+            .onAppear() {
+                
+                
+                if pasteboard.hasStrings {
+                    //                URL = pasteboard.string ?? ""
+                    guard let isAuto = UserDefaults.standard.object(forKey: "AutoPaste") else { return }
+                    
+                    if isAuto as! String == "On" {
+                        print("auto on")
+                        orginalURL = "\(pasteboard.string ?? "")"
+                    }else {
+                        print("auto off")
+                    }
+                }
+            }
+            .navigationBarTitle("Short me", displayMode: .inline)
+            .alert(isPresented: $showsAlert) {
+                Alert(title: Text("Cant use of this service"), message: Text("Try another service Or check URL"), dismissButton: .default(Text("Got it!")))
+            }
+        }
+        .alert(isPresented: $alertForConnection, content: {
+            Alert(title: Text("Network Lost"), message: Text("Check Your Connection"), dismissButton: .default(Text("OK")))
+        })
+        .onTapGesture {
+            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+        }
+    }
+    
+    
+    func changeURL() {
+        if self.progressLoading == false {
+            if orginalURL != "" {
+                //            UserDefaults.standard.set(true, forKey: "SortHistory")
+                withAnimation {
+                    self.progressLoading.toggle()
+                    shortURL = ""
+                }
+                if orginalURL.contains("://") == false {
+                    orginalURL = "Https://" + orginalURL
+                }
+                switch services.first(where: { $0.isChecked == true })?.title {
+                case "is.gd":
+                    APIRequest.sharedInstance.getIsGd(url: orginalURL) { (history) in
+                        gotHistory(history: history)
+                    }
+                case "v.gd":
+                    APIRequest.sharedInstance.getVGd(url: orginalURL) { (history) in
+                        gotHistory(history: history)
+                    }
+                case "tiny-url":
+                    APIRequest.sharedInstance.postTinyUrl(url: orginalURL) { (history) in
+                        gotHistory(history: history)
+                    }
+                case "cutt.ly":
+                    APIRequest.sharedInstance.getCuttLy(url: orginalURL) { (history) in
+                        gotHistory(history: history)
+                    }
+                case "murl.com":
+                    APIRequest.sharedInstance.getMurlCom(url: orginalURL) { (history) in
+                        gotHistory(history: history)
+                    }
+                case "hideurl.com":
+                    APIRequest.sharedInstance.postHideuri(url: orginalURL) { (history) in
+                        gotHistory(history: history)
+                    }
+                case "shrturi.com":
+                    APIRequest.sharedInstance.postShrturi(url: orginalURL) { (history) in
+                        gotHistory(history: history)
+                    }
+                case "shrtco.de":
+                    APIRequest.sharedInstance.getShrtcoDe(url: orginalURL) { (history) in
+                        gotHistory(history: history)
                     }
                     
-                }else {
-                    
-                }
-                
-                
-                                
-                                 
-                
-                Button(action: {
-                    changeURL()
-                }, label: {
-                    Text("Go!")
-                        .frame(minWidth: 100, maxWidth: 180, minHeight: 50, maxHeight: 50, alignment: .center)
-                        .font(.title2)
-                        .foregroundColor(.pink)
-                        .background(Color.white)
-                        .cornerRadius(15)
-                        .padding()
-                })
-                
-            }
-            
-            Spacer()
-        }
-        
-        .background(Image("background").resizable()
-                        .frame(minWidth: 0, idealWidth: .infinity, maxWidth: .infinity, minHeight: 0, idealHeight: .infinity, maxHeight: .infinity, alignment: .center))
-        
-        .onAppear() {
-            
-            
-            if pasteboard.hasStrings {
-//                URL = pasteboard.string ?? ""
-                guard let isAuto = UserDefaults.standard.object(forKey: "AutoPaste") else { return }
-                
-                if isAuto as! String == "On" {
-                        print("auto on")
-                    orginalURL = "\(pasteboard.string ?? "")"
-                }else {
-                    print("auto off")
+                default:
+                    APIRequest.sharedInstance.getIsGd(url: orginalURL) { (history) in
+                        gotHistory(history: history)
+                    }
                 }
             }
         }
-        .navigationBarTitle("Short me", displayMode: .inline)
-        .alert(isPresented: $showsAlert) {
-                    Alert(title: Text("Cant use of this service"), message: Text("Try another service Or check URL"), dismissButton: .default(Text("Got it!")))
-                }
     }
-        
-    }
+    
     func gotHistory(history: History?) {
         guard let historyItem = history else {
             showsAlert = true
-            progressLoading.toggle()
+            withAnimation(.easeInOut(duration: 0.5)) {
+                progressLoading.toggle()
+            }
             return
         }
         print(historyItem)
         var historyList: [History]
-
-        
-        
-        
-        
-//        historyItem.date
-//        historyItem
         
         let historyListData =  UserDefaults.standard.data(forKey: "History")
         if historyListData == nil {
@@ -253,6 +343,10 @@ struct ShortMeView: View {
         
         historyList.append(historyItem)
         
+        if historyList.count >= 500 {
+            historyList.removeFirst()
+        }
+        
         print(historyList)
         if let encoder = try? JSONEncoder().encode(historyList) {
             UserDefaults.standard.set(encoder, forKey: "History")
@@ -260,77 +354,30 @@ struct ShortMeView: View {
             print(historyList)
         }
         
-//        let day = calendar.component(.day, from: date)
-//        let month = calendar.component(.month, from: date)
-//        let year = calendar.component(.year, from: date)
         
         
+        UserDefaults.standard.set(true, forKey: "SortHistory")
         
-        
-
         if history?.shortURL != nil {
             shortURL = history?.shortURL ?? ""
         }
-        withAnimation {
+//        withAnimation(.easeInOut(duration: 0.0)) {
             progressLoading.toggle()
-        }
+//        }
         
+        keepOrgURL = orginalURL
         
     }
     
-    func changeURL() {
-        if self.progressLoading == false {
-        if orginalURL != "" {
-//            UserDefaults.standard.set(true, forKey: "SortHistory")
-        withAnimation {
-            self.progressLoading.toggle()
-            shortURL = ""
-        }
-            if orginalURL.contains("://") == false {
-                orginalURL = "Https://" + orginalURL
-            }
-        switch services.first(where: { $0.isChecked == true })?.title {
-        case "is.gd":
-            APIRequest.sharedInstance.getIsGd(url: orginalURL) { (history) in
-                gotHistory(history: history)
-            }
-        case "v.gd":
-            APIRequest.sharedInstance.getVGd(url: orginalURL) { (history) in
-                gotHistory(history: history)
-            }
-        case "tiny-url":
-            APIRequest.sharedInstance.postTinyUrl(url: orginalURL) { (history) in
-                gotHistory(history: history)
-            }
-        case "cutt.ly":
-            APIRequest.sharedInstance.getCuttLy(url: orginalURL) { (history) in
-                gotHistory(history: history)
-            }
-        case "murl.com":
-            APIRequest.sharedInstance.getMurlCom(url: orginalURL) { (history) in
-                gotHistory(history: history)
-            }
-        case "hideurl.com":
-            APIRequest.sharedInstance.postHideuri(url: orginalURL) { (history) in
-                gotHistory(history: history)
-            }
-        case "shrturi.com":
-            APIRequest.sharedInstance.postShrturi(url: orginalURL) { (history) in
-                gotHistory(history: history)
-            }
-        case "shrtco.de":
-            APIRequest.sharedInstance.getShrtcoDe(url: orginalURL) { (history) in
-                gotHistory(history: history)
-            }
-            
-        default:
-            APIRequest.sharedInstance.getIsGd(url: orginalURL) { (history) in
-                gotHistory(history: history)
-            }
-        }
+    func isNetworkReachable(with flags: SCNetworkReachabilityFlags) -> Bool {
+        let isReachable = flags.contains(.reachable)
+        let needConnection = flags.contains(.connectionRequired)
+        let canConnectAutomatically = flags.contains(.connectionOnDemand) || flags.contains(.connectionOnTraffic)
+        let connectionWithoutInteraction = canConnectAutomatically && !flags.contains(.interventionRequired)
+        
+        return isReachable && (!needConnection || connectionWithoutInteraction)
     }
-    }
-    }
+    
 }
 
 struct ShortMeView_Previews: PreviewProvider {
