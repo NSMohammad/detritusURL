@@ -26,8 +26,6 @@ struct HistoryView: View {
     }
     
     var body: some View {
-//        let _ = print(historyDefault?.count)
-//        let _ = print(historyData.count)
         
         if historyDefault == nil || historyDefault?.count == 2 {
             NavigationView {
@@ -40,231 +38,197 @@ struct HistoryView: View {
                 .foregroundColor(.purple)
                 .padding()
                 
-                    .navigationBarTitle("History", displayMode: .inline)
+                .navigationBarTitle("History", displayMode: .inline)
                 
-                // on appear vaghti khali bod va ye history append mishe
                 .onAppear(perform: {
                     
                     if (UserDefaults.standard.data(forKey: "History") != nil) {
                         historyDefault = UserDefaults.standard.data(forKey: "History")
                     }
-                    
                 })
             }
             
-            
-            
         } else {
-        
-        
-        
-        NavigationView {
             
-            ScrollView {
+            NavigationView {
                 
-                ForEach(historyData) { item in
+                ScrollView {
                     
-                    VStack {
+                    ForEach(historyData) { item in
                         
-                        Text(item.date)
-                            .font(.body)
-                            .foregroundColor(.purple)
-                        
-                        HStack {
                         VStack {
-                            Text("Orginal URL: ")
-                                .frame(maxWidth: .infinity, minHeight: 0, alignment: .leading)
+                            
+                            Text(item.date)
                                 .font(.body)
-                                .foregroundColor(.gray)
+                                .foregroundColor(.purple)
                             
+                            HStack {
+                                VStack {
+                                    Text("Orginal URL: ")
+                                        .frame(maxWidth: .infinity, minHeight: 0, alignment: .leading)
+                                        .font(.body)
+                                        .foregroundColor(.gray)
+                                    
+                                    
+                                    
+                                    Text(item.orginalURL)
+                                        .frame(maxWidth: .infinity, minHeight: 0, alignment: .leading)
+                                        .font(.subheadline)
+                                        .padding(2)
+                                    
+                                    
+                                }
+                                .padding(.bottom, 5)
+                                Spacer()
+                                moreButton(insURL: item.orginalURL)
+                            }
                             
-                            
-                            Text(item.orginalURL)
-                                .frame(maxWidth: .infinity, minHeight: 0, alignment: .leading)
-                                .font(.subheadline)
-                                .padding(2)
-                            
-                            
-                        }
-                        .padding(.bottom, 5)
-                            Spacer()
-                            moreButton(insURL: item.orginalURL)
-                        }
-                        
-                        // divider
-                        Color.pink.frame(height:CGFloat(1) / UIScreen.main.scale)
-                        
-                        HStack {
-                        VStack {
-                            Text("Short URL:")
-                                .frame(maxWidth: .infinity, minHeight: 0, alignment: .leading)
-                                .font(.body)
-                                .foregroundColor(.gray)
-                            
-                            Text(item.shortURL)
-                                .frame(maxWidth: .infinity, minHeight: 0, alignment: .leading)
-                                .font(.subheadline)
-                            
-//                                moreButton(insURL: $item.shortURL)
-                            
-                        }
-                            Spacer()
-                            moreButton(insURL: item.shortURL)
-                    }
-                        if showDeleteButton {
-                            
+                            // divider
                             Color.pink.frame(height:CGFloat(1) / UIScreen.main.scale)
                             
-                            Button(action: {
-                                historyData.removeAll(where: {$0.shortURL == item.shortURL})
-                                if let encoder = try? JSONEncoder().encode(historyData) {
-                                    print(encoder)
-                                    UserDefaults.standard.set(encoder, forKey: "History")
+                            HStack {
+                                VStack {
+                                    Text("Short URL:")
+                                        .frame(maxWidth: .infinity, minHeight: 0, alignment: .leading)
+                                        .font(.body)
+                                        .foregroundColor(.gray)
+                                    
+                                    Text(item.shortURL)
+                                        .frame(maxWidth: .infinity, minHeight: 0, alignment: .leading)
+                                        .font(.subheadline)
+                                    
                                 }
-//                             let index = historyData[i]
-//                                historyData.removeFirst(where: { $0.shortURL == historyData[i].shortURL })
-//                                historyDefault!.remove(at: historyData.firstIndex(of: historyData[i])!)
-//                                historyData.remove(at: historyData.Index(historyData[i]))
+                                Spacer()
+                                moreButton(insURL: item.shortURL)
+                            }
+                            if showDeleteButton {
                                 
-                                if historyData.count == 0 {
-                                    historyDefault = nil
-                                }
+                                Color.pink.frame(height:CGFloat(1) / UIScreen.main.scale)
                                 
-                                UserDefaults.standard.synchronize()
-                                
-                            },label: {
-                                        
+                                Button(action: {
+                                    historyData.removeAll(where: {$0.shortURL == item.shortURL})
+                                    if let encoder = try? JSONEncoder().encode(historyData) {
+                                        print(encoder)
+                                        UserDefaults.standard.set(encoder, forKey: "History")
+                                    }
+                                    
+                                    if historyData.count == 0 {
+                                        historyDefault = nil
+                                    }
+                                    
+                                    UserDefaults.standard.synchronize()
+                                    
+                                },label: {
+                                    
                                     Text("Delete")
                                         .frame(minWidth: 0, idealWidth: .infinity, maxWidth: .infinity, maxHeight: 40, alignment: .center)
-                                    
-                                    
-                                   })
+                                })
                                 .foregroundColor(.white)
                                 .background(RoundedCorners(color: .red, tl: 0, tr: 0, bl: 30, br: 30))
-//                                .padding(1)
+                            }
                         }
-//                        }
+                        .padding()
+                        .background(Color.white)
+                        .cornerRadius(20.0)
+                        .padding(.top, 5)
+                        .padding(.leading)
+                        .padding(.trailing)
                     }
-                    .padding()
-                    .background(Color.white)
-                    .cornerRadius(20.0)
-                    .padding(.top, 5)
-                    .padding(.leading)
-                    .padding(.trailing)
-//                    .padding(.bottom, 2)
+                    .onAppear() {
+                        historyData.sort { (lhs, rhs) -> Bool in
+                            return lhs.timeStamp > rhs.timeStamp
+                        }
+                    }
                 }
-                .onAppear() {
+                .navigationBarTitle("History", displayMode: .inline)
+                .navigationBarItems(leading:
+                                        
+                                        Button(action: {
+                                            if showRemoveAllButton {
+                                                showRemoveAllAlert = true
+                                            }
+                                            showRemoveAllButton = true
+                                            showDeleteButton = true
+                                        }, label: {
+                                            if showRemoveAllButton {
+                                                Text("All")
+                                            }else {
+                                                Image(systemName: "trash")
+                                            }
+                                        })
+                                    , trailing:
+                                        Button(action: {
+                                            
+                                            if sortByLast {
+                                                historyData.sort { (lhs, rhs) -> Bool in
+                                                    return lhs.timeStamp < rhs.timeStamp
+                                                }
+                                                sortByLast = false
+                                                UserDefaults.standard.setValue(false, forKey: "SortHistory")
+                                            }else {
+                                                historyData.sort { (lhs, rhs) -> Bool in
+                                                    return lhs.timeStamp > rhs.timeStamp
+                                                }
+                                                sortByLast = true
+                                                UserDefaults.standard.setValue(true, forKey: "SortHistory")
+                                            }
+                                            
+                                        }, label: {
+                                            if showRemoveAllButton {
+                                                Button("Done") {
+                                                    print("Done tapped!")
+                                                    showRemoveAllButton = false
+                                                    showDeleteButton = false
+                                                }
+                                            }else {
+                                                if sortByLast {
+                                                    Image(systemName: "chevron.up.circle")
+                                                }else {
+                                                    Image(systemName: "chevron.down.circle")
+                                                }
+                                            }
+                                        })
+                )
+                .foregroundColor(.purple)
+                .alert(isPresented: $showRemoveAllAlert, content: {
+                    Alert(title: Text("Remove All"), message: Text("Do you want to remove all?"), primaryButton: .destructive(Text("Delete")){
+                        
+                        historyDefault = nil
+                        historyData.removeAll()
+                        
+                        UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
+                        UserDefaults.standard.synchronize()
+                        
+                    }, secondaryButton: .cancel())
+                })
+                
+                .background(Image("background").resizable()
+                                .frame(minWidth: 0, idealWidth: .infinity, maxWidth: .infinity, minHeight: 0, idealHeight: .infinity, maxHeight: .infinity, alignment: .center))
+            }
+            .onAppear(perform: {
+                self.reload()
+                
+                if sortByLast {
                     historyData.sort { (lhs, rhs) -> Bool in
                         return lhs.timeStamp > rhs.timeStamp
                     }
-//                    let _ = print(historyData)
-                    
+                }else {
+                    historyData.sort { (lhs, rhs) -> Bool in
+                        return lhs.timeStamp < rhs.timeStamp
+                    }
                 }
-                
-            }
-            .navigationBarTitle("History", displayMode: .inline)
-            .navigationBarItems(leading:
-                                    
-                                    Button(action: {
-//                                        showRemoveAllButton = showRemoveAllButton ? false : true
-                                        if showRemoveAllButton {
-                                            showRemoveAllAlert = true
-                                        }
-                                        showRemoveAllButton = true
-                                        showDeleteButton = true
-                                    }, label: {
-                                        if showRemoveAllButton {
-                                            Text("All")
-                                        }else {
-                                            Image(systemName: "trash")
-                                        }
-                                        
-                                    })
-                                , trailing:
-                                    Button(action: {
-                                        
-                                        if sortByLast {
-                                            historyData.sort { (lhs, rhs) -> Bool in
-                                                return lhs.timeStamp < rhs.timeStamp
-                                            }
-                                            sortByLast = false
-                                            UserDefaults.standard.setValue(false, forKey: "SortHistory")
-                                        }else {
-                                            historyData.sort { (lhs, rhs) -> Bool in
-                                                return lhs.timeStamp > rhs.timeStamp
-                                            }
-                                            sortByLast = true
-                                            UserDefaults.standard.setValue(true, forKey: "SortHistory")
-                                        }
-                                        
-                                        
-                                        
-                                        
-                                        
-                                    }, label: {
-                                        if showRemoveAllButton {
-                                            Button("Done") {
-                                                print("Done tapped!")
-                                                showRemoveAllButton = false
-                                                showDeleteButton = false
-                                            }
-                                        }else {
-                                            if sortByLast {
-                                                Image(systemName: "chevron.up.circle")
-                                            }else {
-                                                Image(systemName: "chevron.down.circle")
-                                            }
-                                        }
-                                    })
-            )
-            .foregroundColor(.purple)
-            .alert(isPresented: $showRemoveAllAlert, content: {
-                Alert(title: Text("Remove All"), message: Text("Do you want to remove all?"), primaryButton: .destructive(Text("Delete")){
-                    
-//                    UserDefaults.standard.removeObject(forKey: "History")
-                    historyDefault = nil
-                    historyData.removeAll()
-                    
-                    UserDefaults.standard.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
-                    UserDefaults.standard.synchronize()
-                    
-                }, secondaryButton: .cancel())
+            })
+            .onDisappear(perform: {
+                showRemoveAllButton = false
+                showDeleteButton = false
             })
             
-            .background(Image("background").resizable()
-                            .frame(minWidth: 0, idealWidth: .infinity, maxWidth: .infinity, minHeight: 0, idealHeight: .infinity, maxHeight: .infinity, alignment: .center))
-        }
-        .onAppear(perform: {
-                    self.reload()
-            
-            if sortByLast {
-                historyData.sort { (lhs, rhs) -> Bool in
-                    return lhs.timeStamp > rhs.timeStamp
-                }
-            }else {
-                historyData.sort { (lhs, rhs) -> Bool in
-                    return lhs.timeStamp < rhs.timeStamp
-                }
-            }
-
-            
-                })
-        .onDisappear(perform: {
-            showRemoveAllButton = false
-            showDeleteButton = false
-        })
-        
         }
         
     }
     private func reload() {
-        print(historyData)
         historyData = try! JSONDecoder().decode([History].self, from: UserDefaults.standard.data(forKey: "History")!)
-//        if historyData.count == 0 {
-//            historyDefault = nil
-//        }
-        print(historyData)
-        }
+    }
 }
 
 struct HistoryView_Previews: PreviewProvider {
@@ -273,6 +237,7 @@ struct HistoryView_Previews: PreviewProvider {
     }
 }
 struct moreButton: View {
+    
     let pasteboard = UIPasteboard.general
     
     var insURL: String
@@ -282,11 +247,8 @@ struct moreButton: View {
     var body: some View {
         
         Button(action: {
-            
             pasteboard.string = insURL
-            
         }, label: {
-//
             Image(systemName: "doc.on.doc")
                 .font(.title2)
                 .frame(width: 40, height: 40, alignment: .center)
@@ -294,14 +256,10 @@ struct moreButton: View {
                 .background(Image("background").resizable())
                 .clipShape(Circle())
                 .overlay(Circle().stroke().foregroundColor(.purple))
-            
-            
         })
         .padding(.trailing)
         Button(action: {
-            
             openURL(URL(string: insURL)!)
-            
         }, label: {
             Image(systemName: "safari")
                 .font(.title)
@@ -312,29 +270,29 @@ struct moreButton: View {
                 .overlay(Circle().stroke().foregroundColor(.purple))
         })
         .padding(.trailing, 5)
-        //        .listRowBackground(Color.clear)
     }
 }
+
 struct RoundedCorners: View {
     var color: Color = .blue
     var tl: CGFloat = 0.0
     var tr: CGFloat = 0.0
     var bl: CGFloat = 0.0
     var br: CGFloat = 0.0
-
+    
     var body: some View {
         GeometryReader { geometry in
             Path { path in
-
+                
                 let w = geometry.size.width
                 let h = geometry.size.height
-
+                
                 // Make sure we do not exceed the size of the rectangle
                 let tr = min(min(self.tr, h/2), w/2)
                 let tl = min(min(self.tl, h/2), w/2)
                 let bl = min(min(self.bl, h/2), w/2)
                 let br = min(min(self.br, h/2), w/2)
-
+                
                 path.move(to: CGPoint(x: w / 2.0, y: 0))
                 path.addLine(to: CGPoint(x: w - tr, y: 0))
                 path.addArc(center: CGPoint(x: w - tr, y: tr), radius: tr, startAngle: Angle(degrees: -90), endAngle: Angle(degrees: 0), clockwise: false)

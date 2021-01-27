@@ -39,9 +39,6 @@ struct ShortMeView: View {
     
     @State var showsAlert = false
     
-
-    
-    
     init() {
         UITableView.appearance().showsVerticalScrollIndicator = false
     }
@@ -67,14 +64,13 @@ struct ShortMeView: View {
                                     .font(.title3)
                                 
                                 Spacer()
-                                //checkmark
+                                
                                 Image(systemName: item.isChecked ?
                                         "checkmark.circle" : "circle")
                                     .font(.title2)
                                 
                             }
                             .contentShape(Rectangle())
-                            //                        .frame(maxWidth : .infinity)
                             .onTapGesture {
                                 let index = services.firstIndex(where: { $0.isChecked == true })
                                 services[index!].isChecked = false
@@ -87,7 +83,7 @@ struct ShortMeView: View {
                                 }
                                 
                                 withAnimation(.linear(duration: 1)) {
-                                self.progressLoading = false
+                                    self.progressLoading = false
                                 }
                                 
                             }
@@ -102,8 +98,6 @@ struct ShortMeView: View {
                     .background(Color.white)
                     .cornerRadius(15)
                     .padding()
-                    
-                    
                     
                     Text("URL:")
                         .font(.title3)
@@ -135,11 +129,6 @@ struct ShortMeView: View {
                         })
                     }
                     
-//                    if progressLoading {
-//                        ProgressView()
-//                            .frame(width: 60, height: 40, alignment: .center)
-//
-//                    }
                     if orginalURL != "" {
                         ZStack {
                             if progressLoading {
@@ -150,64 +139,54 @@ struct ShortMeView: View {
                             }
                             if shortURL != "" {
                                 
-                                    VStack {
+                                VStack {
+                                    
+                                    Text("Short URL:")
+                                        .font(.title3)
+                                    
+                                    HStack {
+                                        Text(shortURL)
+                                            .font(.title2)
+                                            .padding(.leading, 25)
                                         
-                                        Text("Short URL:")
-                                            .font(.title3)
-                                            
-                                        HStack {
-                                            Text(shortURL)
-                                                .font(.title2)
-                                                .padding(.leading, 25)
-                                                
-                                            Spacer()
-                                            
-                                            Button(action: {
-                                                withAnimation {
+                                        Spacer()
+                                        
+                                        Button(action: {
+                                            withAnimation {
                                                 pasteboard.string = shortURL
-                                                }
-                                            }, label: {
-                                                Image(systemName: "doc.on.doc")
-                                                    .transition(.slide)
-                                                
-                                            })
-                                            .padding(5)
-                                            Button(action: {
-                                                
-                                                openURL(URL(string: shortURL)! )
-                                                
-                                            }, label: {
-                                                Image(systemName: "safari")
-                                            })
-                                            .padding(.trailing, 20)
-                                            .padding(5)
-                                        }
-                                        .frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
-                                        
-                                        .padding(8)
-                                        .overlay(
-                                            RoundedRectangle(cornerRadius: 10)
-                                                .stroke()
-                                                .stroke(lineWidth: 1.5)
-                                                .foregroundColor(.white)
-                                                .padding(.leading)
-                                                .padding(.trailing)
-                                        )
+                                            }
+                                        }, label: {
+                                            Image(systemName: "doc.on.doc")
+                                                .transition(.slide)
+                                            
+                                        })
+                                        .padding(5)
+                                        Button(action: {
+                                            
+                                            openURL(URL(string: shortURL)! )
+                                            
+                                        }, label: {
+                                            Image(systemName: "safari")
+                                        })
+                                        .padding(.trailing, 20)
+                                        .padding(5)
                                     }
-                                    .foregroundColor(.white)
-                            
-                                
+                                    .frame(minWidth: 0, maxWidth: .infinity, alignment: .center)
+                                    
+                                    .padding(8)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .stroke()
+                                            .stroke(lineWidth: 1.5)
+                                            .foregroundColor(.white)
+                                            .padding(.leading)
+                                            .padding(.trailing)
+                                    )
+                                }
+                                .foregroundColor(.white)
                             }
                         }
-                        
-
                     }
-                    
-
-                    
-                    
-                    
-                    
                     
                     Button(action: {
                         var flags = SCNetworkReachabilityFlags()
@@ -244,7 +223,6 @@ struct ShortMeView: View {
                 
                 
                 if pasteboard.hasStrings {
-                    //                URL = pasteboard.string ?? ""
                     guard let isAuto = UserDefaults.standard.object(forKey: "AutoPaste") else { return }
                     
                     if isAuto as! String == "On" {
@@ -272,7 +250,6 @@ struct ShortMeView: View {
     func changeURL() {
         if self.progressLoading == false {
             if orginalURL != "" {
-                //            UserDefaults.standard.set(true, forKey: "SortHistory")
                 withAnimation {
                     self.progressLoading.toggle()
                     shortURL = ""
@@ -361,9 +338,7 @@ struct ShortMeView: View {
         if history?.shortURL != nil {
             shortURL = history?.shortURL ?? ""
         }
-//        withAnimation(.easeInOut(duration: 0.0)) {
-            progressLoading.toggle()
-//        }
+        progressLoading.toggle()
         
         keepOrgURL = orginalURL
         
@@ -393,7 +368,4 @@ struct Service: Identifiable, Equatable {
     var isChecked = false
     
 }
-
-
-// app mire back ground bar migarde auto paste beshe
 

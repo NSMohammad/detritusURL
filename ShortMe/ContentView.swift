@@ -17,43 +17,34 @@ struct ContentView: View {
     
     var body: some View {
         
-            ZStack {
-                TabView(selection: $selection){
-                    
-                    ShortMeView().tabItem {
-                        VStack {
-                            selection == 1 ? Image("icons8-cut_filled") : Image("icons8-cut")
-                            Text("Short Me")
-                        } }.tag(1)
-                    
-                    
-                    
-                    HistoryView().tabItem {
-                        VStack {
-                            selection == 2 ? Image("icons8-past_filled") : Image("icons8-past")
-                                .renderingMode(.original)
-                            Text("History")
-                        } }.tag(2)
-                        
-                    
-                    
-                    InfoView().tabItem {
-                        VStack {
-                            selection == 3 ? Image("icons8-info_filled") : Image("icons8-info")
-                            Text("Info")
-                        }
-                    }.tag(3)
-                }
-                .accentColor(.pink)
-                
-
-        }
-
+        ZStack {
             
-        
+            TabView(selection: $selection){
+                
+                ShortMeView().tabItem {
+                    VStack {
+                        selection == 1 ? Image("icons8-cut_filled") : Image("icons8-cut")
+                        Text("Short Me")
+                    } }.tag(1)
+                
+                HistoryView().tabItem {
+                    VStack {
+                        selection == 2 ? Image("icons8-past_filled") : Image("icons8-past")
+                            .renderingMode(.original)
+                        Text("History")
+                    } }.tag(2)
+                
+                InfoView().tabItem {
+                    VStack {
+                        selection == 3 ? Image("icons8-info_filled") : Image("icons8-info")
+                        Text("Info")
+                    }
+                }.tag(3)
+            }
+            .accentColor(.pink)
+            
+        }
     }
-    
-    
 }
 
 struct ContentView_Previews: PreviewProvider {
