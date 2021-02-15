@@ -11,10 +11,6 @@ struct ContentView: View {
     
     @State private var selection = 1
     
-    init() {
-        UITabBar.appearance().barTintColor = UIColor.systemGray6
-    }
-    
     var body: some View {
         
         ZStack {

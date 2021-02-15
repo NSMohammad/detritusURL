@@ -50,7 +50,7 @@ struct ShortMeView: View {
                 VStack {
                     Text("Services:")
                         .font(.title3)
-                        .foregroundColor(.white)
+                        .foregroundColor(Color("white&black"))
                         .padding(.top)
                         .padding(.bottom , -15)
                     
@@ -62,12 +62,14 @@ struct ShortMeView: View {
                                 
                                 Text(item.title)
                                     .font(.title3)
+                                    .foregroundColor(Color("black&white"))
                                 
                                 Spacer()
                                 
                                 Image(systemName: item.isChecked ?
                                         "checkmark.circle" : "circle")
                                     .font(.title2)
+                                    .foregroundColor(Color("black&white"))
                                 
                             }
                             .contentShape(Rectangle())
@@ -94,14 +96,15 @@ struct ShortMeView: View {
                             
                         }
                     }
+                    .frame(maxWidth: .infinity, maxHeight: 370, alignment: .center)
                     .padding()
-                    .background(Color.white)
+                    .background(Color("white&black"))
                     .cornerRadius(15)
                     .padding()
                     
                     Text("URL:")
                         .font(.title3)
-                        .foregroundColor(.white)
+                        .foregroundColor(Color("white&black"))
                         .padding(.bottom, -10)
                     
                     HStack {
@@ -109,6 +112,7 @@ struct ShortMeView: View {
                         TextField("Enter your URL here...", text: $orginalURL, onCommit: {
                             changeURL()
                         })
+                        .foregroundColor(Color("gray&white"))
                         .textContentType(.URL)
                         .keyboardType(.URL)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
@@ -123,7 +127,7 @@ struct ShortMeView: View {
                             }
                         }, label: {
                             Image("icons8-paste")
-                                .foregroundColor(.white)
+                                .foregroundColor(Color("white&black"))
                                 .frame(width: 50, height: 50, alignment: .center)
                                 .padding(.trailing)
                         })
@@ -178,12 +182,12 @@ struct ShortMeView: View {
                                         RoundedRectangle(cornerRadius: 10)
                                             .stroke()
                                             .stroke(lineWidth: 1.5)
-                                            .foregroundColor(.white)
+                                            .foregroundColor(Color("white&black"))
                                             .padding(.leading)
                                             .padding(.trailing)
                                     )
                                 }
-                                .foregroundColor(.white)
+                                .foregroundColor(Color("white&black"))
                             }
                         }
                     }
@@ -205,7 +209,7 @@ struct ShortMeView: View {
                             .frame(minWidth: 100, maxWidth: 180, minHeight: 50, maxHeight: 50, alignment: .center)
                             .font(.title2)
                             .foregroundColor(.pink)
-                            .background(Color.white)
+                            .background(Color("white&black"))
                             .cornerRadius(15)
                             .padding()
                     })

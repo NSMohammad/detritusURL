@@ -67,7 +67,7 @@ struct HistoryView: View {
                                     Text("Orginal URL: ")
                                         .frame(maxWidth: .infinity, minHeight: 0, alignment: .leading)
                                         .font(.body)
-                                        .foregroundColor(.gray)
+                                        .foregroundColor(Color("gray&white"))
                                     
                                     
                                     
@@ -91,7 +91,7 @@ struct HistoryView: View {
                                     Text("Short URL:")
                                         .frame(maxWidth: .infinity, minHeight: 0, alignment: .leading)
                                         .font(.body)
-                                        .foregroundColor(.gray)
+                                        .foregroundColor(Color("gray&white"))
                                     
                                     Text(item.shortURL)
                                         .frame(maxWidth: .infinity, minHeight: 0, alignment: .leading)
@@ -128,7 +128,7 @@ struct HistoryView: View {
                             }
                         }
                         .padding()
-                        .background(Color.white)
+                        .background(Color("white&gray"))
                         .cornerRadius(20.0)
                         .padding(.top, 5)
                         .padding(.leading)

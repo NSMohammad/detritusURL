@@ -28,14 +28,14 @@ struct InfoView: View {
             
             
             Text("App Version: \(appVersion)")
-                .foregroundColor(.white)
+                .foregroundColor(Color("white&black"))
                 .padding(.top, -10)
                 .padding(.bottom, 30)
             
             Toggle(isOn: $autoPaste, label: {
                 Text("Auto paste URL")
                     .font(.title3)
-                    .foregroundColor(.white)
+                    .foregroundColor(Color("white&black"))
             })
             .padding()
             .overlay(
